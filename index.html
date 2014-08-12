@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Преимущства SASS</title>
+    <link rel="stylesheet" href="css/global.css"/>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js"></script>
+</head>
+<body>
+    <div class="main">
+        <div class="content">
+            <h1>Преимущества SASS</h1>
+            <ul>
+                <li><a href="#variables">Переменные</a></li>
+                <li><a href="#nesting">Вложенные правила</a></li>
+                <li><a href="#mixins">Готовые правила</a></li>
+                <li><a href="#partials">Объединение стилей</a></li>
+                <li><a href="#inheritance">Наследование</a></li>
+            </ul>
+            <div id="variables">
+                <h2>Переменные</h2>
+                <p>
+                    Больше не нужно беспокоится о том, чтобы запоминать hex-цвета для стилей или размер шрифта.
+                    Достаточно просто определить значения в самом начале, а затем можно использовать его в любом
+                    месте, где оно может нам понадобится:
+<pre>
+    <code class="css">
+        $redColor: #cc0000;
+        $disabledColor: #bebebe;
+
+        $mediumTextSize: 14pt;
+        $smallTextSize: 12pt;
+
+        .panel a.active {
+            color: $redColor;
+            display: inline-block;
+        }
+
+        .panel button.disabled {
+            background-color: $disabledColor;
+        }
+
+        .content {
+            font-size: $mediumTextSize;
+        }
+
+        .footer .copyright {
+            font-size: $smallTextSize;
+        }
+    </code>
+</pre>
+                </p>
+            </div>
+            <div id="nesting">
+                <h2>Вложенные правила</h2>
+                <p>
+                    Вложенность, которая является одной из самых главных киллер-фич препроцессора SASS, поможет писать
+                    наиболее читаемый и компактный код.</p>
+                    <p>Раньше бы мы написали так:</p>
+<pre>
+    <code class="css">
+        nav ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        nav ul li { display: inline-block; }
+
+        nav ul li a {
+            display: block;
+            padding: 6px 12px;
+            text-decoration: none;
+        }
+
+        body #main .value {
+            color: #eee;
+        }
+
+        body #main .value a.link {
+            color: #101010;
+            text-decoration: none;
+        }
+    </code>
+</pre>
+                    ...и были бы правы. Но SCSS позволяет написать тоже самое и более компактно:
+<pre>
+    <code class="css">
+        nav {
+            ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+
+                li {
+                    display: inline-block;
+
+                    a {
+                        display: block;
+                        padding: 6px 12px;
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+
+        body #main .value {
+            color: #eee;
+
+            a.link {
+                color: #101010;
+                text-decoration: none;
+            }
+        }
+    </code>
+</pre>
+
+                В послледнем варианте видно, что код стал более структруированным, в нем уже проще разобраться и
+                внести какие-либо изменения. Вложенность также позволяет писать правила для конктретных элементов, без
+                боязни за то, что где-то придется переопределять или усиливать селектор для корректой отработки блоков и неймспейсов
+                </p>
+            </div>
+
+            <div id="mixins">
+                <h2>Готовые правила</h2>
+                <p>
+                    В SASS широко распространено применение так называемых mixins (примеси), которые позволяют использовать
+                    какое-либо повторяющееся правило во многих местах, написав его однажды. Это выглядит очень привлекательно исходя из DRY принцпа написания кода (Don't Repeat Yourself).
+                    Mixins могут принимать входящие параметры, чем очень похожи на функции или методы из традиционных языков программирования.
+                    Пример:
+<pre>
+<code class="css">
+    @mixin border-radius($radius) {
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    -ms-border-radius: $radius;
+    border-radius: $radius;
+    }
+
+    .box {
+    @include border-radius(10px);
+    position: relative;
+    top: 10px;
+    }
+
+    .slider {
+    @include border-radius(5px);
+    float: left;
+    }
+</code>
+</pre>
+                </p>
+            </div>
+
+            <div id="partials">
+                <h2>Объединение стилей</h2>
+                <p>
+                Понятное дело, что в больших проектах требуется разделение стиля всего проекта на относительно маленьнкие
+                файлы, например в соответствии с именованием модулей или разделов сайта. Также рекомендуется разделение стилей
+                на отдельные файлы в зависимости от предназанчения, например:
+<pre>
+<code class="css">
+@import 'reset.css';  // стили сброса стандартных правил браузера
+@import 'typography.css'; // стили для шрифтов, ссылок и текста
+</code>
+</pre>
+                Поэтому имеет смысл перед подключением этих стилей в production объединить их в один файл в соответсвии
+                с той последовательностью, которая нам необходима. Организация, объединение и компиляция стилей при помощи SASS выглядит как показано на рисунке:
+                </p>
+                <p>
+                    <img src="img/sass_compile.jpg" alt="SASS compile"/>
+                </p>
+                <p>
+                    Для создания маленького кусочка кода стилей достаточно поставить перед его именем нижнее подчеркивание
+                     (_имяФайла.scss) в папке SASS:
+                </p>
+                <p>
+                    <img src="img/sass_partials.jpg" alt="SASS partials"/>
+                </p>
+            </div>
+            <div id="inheritance">
+                <h2>Наследование</h2>
+                <p>
+                Наследование в SASS позволяет импортировать правила стилей из одной секции проекта в другие. Это также позволяет
+                сократить количество новых строчек кода и во многом упростить жизнь разработчика интерфейсов:
+<pre>
+<code class="css">
+    .message {
+        border: 1px solid #ccc;
+        padding: 10px;
+        color: #333;
+    }
+
+    .success {
+        @extend .message;
+        border-color: green;
+    }
+
+    .error {
+        @extend .message;
+        border-color: red;
+    }
+
+    .alarm {
+        @extend .message;
+        border-color: yellow;
+    }
+</code>
+</pre>
+
+                </p>
+            </div>
+        </div>
+    </div>
+    <script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>
